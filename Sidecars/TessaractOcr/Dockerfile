@@ -3,12 +3,16 @@ EXPOSE 8080
 EXPOSE 8081
 
 USER root
+# 1. Install prerequisites for adding PPAs
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    tesseract-ocr \
-    libtesseract-dev \
-    tesseract-ocr-eng && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends software-properties-common gnupg && \
+    # 2. Add the Tesseract 5 PPA (maintained by the official dev)
+    add-apt-repository -y ppa:alex-p/tesseract-ocr5 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends tesseract-ocr libtesseract-dev tesseract-ocr-eng && \
+    # 4. Cleanup
+    apt-get purge -y --auto-remove software-properties-common && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $APP_UID
 WORKDIR /app

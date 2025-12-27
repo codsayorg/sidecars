@@ -4,7 +4,7 @@ using Wolverine.Runtime.Handlers;
 
 namespace SidecarService.Common;
 
-public record ExecuteCommand(string Command);
+public record ExecuteCommand(string Command, TimeSpan? Timeout = null);
 public record ExecuteResult(string? Output, string? Error);
 
 public class ProcessCommandHandler
@@ -38,11 +38,36 @@ public class ProcessCommandHandler
         {
             return new(null, $"Unable to execute the command {exeCmd}");
         }
+
+        var timeout = command.Timeout ?? appOptions.Process.Timeout;
+
+        using var waitCts = new CancellationTokenSource(timeout);
+        try
+        {
+            await proc.WaitForExitAsync(waitCts.Token);
+        }
+        catch (TaskCanceledException)
+        {
+            if (!proc.HasExited)
+            {
+                try
+                {
+                    proc.Kill(entireProcessTree: true);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error when killing timed out ({Timeout}) process", command.Timeout);
+                }
+
+                return new ExecuteResult(null, $"Exceeded timeout {command.Timeout}");
+            }
+        }
+
+        using var readCts = new CancellationTokenSource(timeout);
+        var output = await proc.StandardOutput.ReadToEndAsync(readCts.Token);
+        var error = await proc.StandardError.ReadToEndAsync(readCts.Token);
         
-        var output = await proc.StandardOutput.ReadToEndAsync();
-        var error = await proc.StandardError.ReadToEndAsync();
-        
-        logger.LogDebug("Executed command: {exeCmd}", exeCmd);
+        logger.LogDebug("Executed command: {exeCmd}, ExitCode: {ExitCode}", exeCmd, proc.ExitCode);
         
         return new(output, error);
     }
