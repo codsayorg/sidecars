@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  tesseract-ocr-server:
+    build:
+      context: "/Users/codsay/workspace/projects/theone/Sidecar/Sidecars/TessaractOcr"
+      dockerfile: "Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net10.0/SidecarService.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "sidecarservice:dev"
+    ports: []
+    volumes:
+    - "/Users/codsay/workspace/projects/theone/Sidecar/SidecarService:/app:rw"
+    - "/Users/codsay/workspace/projects/theone/Sidecar:/src:rw"
+    - "/Users/codsay/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"

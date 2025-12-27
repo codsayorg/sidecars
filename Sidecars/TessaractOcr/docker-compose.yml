@@ -1,0 +1,13 @@
+services:
+  tesseract-ocr-server:
+    container_name: tesseract-ocr-server
+    build:
+      context: .
+    ports:
+      - 8080:8080
+    volumes:
+      - ./data_dev:/app/data
+    environment:
+      - Sidecar_Process__Name=tesseract
+      - Sidecar_Process__VersionCommand=[Name] -v
+      - Sidecar_Process__Command=[Name] [FilePath] - l eng --psm 3 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-/ '#
