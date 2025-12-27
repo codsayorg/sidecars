@@ -16,10 +16,10 @@ public static class CoreApi
                                    <html lang=""en"">
                                    <head>
                                        <meta charset=""utf-8"">
-                                       <title>{appOptions.Process.Name}!</title>
+                                       <title>{appOptions.Process.Name}</title>
                                    </head>
                                    <body>
-                                       <h1>Sidecar Service: {appOptions.Process.Name}</h1>
+                                       <h1>Sidecar service: {appOptions.Process.Name}</h1>
 
                                        <p>- Explore apis at <a href="/apis">/apis</a></p>
                                        <p>- Ping: <a href="/ping">/ping</a></p>

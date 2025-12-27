@@ -1,6 +1,12 @@
 
 # Build image
 
+## Examples
+
+![Resources](./Resources/example_index.png)
+![Version](./Resources/example_version.png)
+![APIs](./Resources/example_apis.png)
+
 ## Tesseract Ocr
 
 ```shell
@@ -23,22 +29,22 @@ docker build --platform linux/amd64 -t docker-registry.hoang.id/tesseract-ocr-se
 
 ```shell
 # The data folder path (optional, default is /app/data) 
-App_DataFolderPath=/app/data
+Sidecar_DataFolderPath=/app/data
 
 # The maximum number of processes can run in parallel (optional, default is 5)
-App_Queue__MaxParallelism=5
+Sidecar_Queue__MaxParallelism=5
 
 # The process name (required)
-App_Process__Name=
+Sidecar_Process__Name=
 # The default command to process on files (required)
-App_Process__Command=
+Sidecar_Process__Command=
 # The command to get version of process (required)
-App_Process__VersionCommand=
+Sidecar_Process__VersionCommand=
 
 # The timeout on each process on file (optional, default is 15 seconds)
 App_Process__Timeout="0:00:15"
 # The number of retries if process on file is failed (optional, default 4 times with [300ms, 500ms , 1s, 5s])
-App_Process__Retries=[ 300, 500, 1000, 5000 ]
+Sidecar_Process__Retries=[ 300, 500, 1000, 5000 ]
 ```
 
 ## Tesseract Ocr
