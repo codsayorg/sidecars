@@ -10,8 +10,9 @@
 ## Tesseract Ocr
 
 ```shell
-cd ./Sidecars/TesseractOrc
-docker build --platform linux/amd64 -t docker-registry.hoang.id/tesseract-ocr-server:latest .
+docker build --platform linux/amd64 -t docker-registry.hoang.id/tesseract-ocr-server:latest -f ./Sidecars/TessaractOcr/Dockerfile .
+
+docker push docker-registry.hoang.id/tesseract-ocr-server:latest
 ```
 
 # Usage
