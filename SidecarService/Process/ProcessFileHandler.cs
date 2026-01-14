@@ -4,13 +4,13 @@ using Wolverine;
 
 namespace SidecarService.Process;
 
-public record ProcessFileCommand(string File, string? Command, TimeSpan? Timeout);
+public record ProcessFileCommand(string Process, string Command, string File, TimeSpan? Timeout);
 public record ProcessFileResult(bool Status, string? Content = null, string? Error = null);
 
 public class ProcessFileHandler
 {
-    public static async Task<ProcessFileResult> Handle(ProcessFileCommand command, ILogger<ProcessFileHandler> logger,
-        AppOptions appOptions, IMessageBus messageBus)
+    public static async Task<ProcessFileResult> Handle(ProcessFileCommand command,
+        ILogger<ProcessFileHandler> logger, AppOptions appOptions, IMessageBus messageBus)
     {
         if (string.IsNullOrWhiteSpace(command.File)) return new(false, Error: "File name is required");
         if (command.File.Contains("..")) return new(false, Error: "Invalid file: path traversal detected");
@@ -30,12 +30,11 @@ public class ProcessFileHandler
         }
         
         var cmd = command.Command;
-        if (string.IsNullOrWhiteSpace(cmd)) cmd = appOptions.Process.Command;
         if (string.IsNullOrWhiteSpace(cmd)) return new(false, Error: $"Command is not provided");
         
         cmd = cmd.Replace("[FilePath]", fullPath);
 
-        var result = await messageBus.InvokeAsync<ExecuteResult>(new ExecuteCommand(cmd, command.Timeout));
+        var result = await messageBus.InvokeAsync<ExecuteResult>(new ExecuteCommand(command.Process, cmd, command.Timeout));
         return new(true, result.Output, result.Error);
     }
 }

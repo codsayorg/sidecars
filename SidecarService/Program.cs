@@ -37,7 +37,7 @@ var app = builder.Build();
 app.MapOpenApi();
 app.MapScalarApiReference("/apis", (options) =>
 {
-    options.WithTitle($"{appOptions.Process.Name} service")
+    options.WithTitle($"{appOptions.Name} service")
         .HideSearch();
 });
 
@@ -52,7 +52,6 @@ namespace SidecarService
     [JsonSerializable(typeof(ProcessFileResult[]))]
     [JsonSerializable(typeof(AppOptions))]
     [JsonSerializable(typeof(Common.ExecuteResult))]
-    [JsonSerializable(typeof(ExecuteCommandRequest))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }

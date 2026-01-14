@@ -4,7 +4,7 @@ using Wolverine.Runtime.Handlers;
 
 namespace SidecarService.Common;
 
-public record ExecuteCommand(string Command, TimeSpan? Timeout = null);
+public record ExecuteCommand(string ProcessName, string Command, TimeSpan? Timeout = null);
 public record ExecuteResult(string? Output, string? Error);
 
 public class ProcessCommandHandler
@@ -17,14 +17,7 @@ public class ProcessCommandHandler
     
     public static async Task<ExecuteResult> Handle(ExecuteCommand command, ILogger<ProcessCommandHandler> logger, AppOptions appOptions)
     {
-        var exeCmd = command.Command;
-        if (string.IsNullOrWhiteSpace(exeCmd))
-        {
-            return new(null, "Command is not provided");
-        }
-        
-        exeCmd = exeCmd.Replace("[Name]", appOptions.Process.Name);
-        
+        var exeCmd = $"{command.ProcessName} {command.Command}";
         logger.LogDebug("Before execute command: {exeCmd}", exeCmd);
         
         using var proc = new System.Diagnostics.Process();
